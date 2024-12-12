@@ -31,5 +31,27 @@ namespace ProductManagementWebApi.Repositories
                 .Take(pageSize)
                 .ToList();
         }
+
+        public Product UpdateProduct(Product product)
+        {
+            _context.Products.Update(product);
+            _context.SaveChanges();
+            return product;
+        }
+
+        public bool DeleteProduct(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product == null) return false;
+
+            _context.Products.Remove(product);
+            _context.SaveChanges();
+            return true;
+        }
+
+        public int GetTotalProductCount()
+        {
+            return _context.Products.Count();
+        }
     }
 }
