@@ -17,5 +17,10 @@ namespace ProductManagementWebApi.Repositories
             _context.SaveChanges();
             return product;
         }
+
+        public Product GetProductById(int id)
+        {
+            return _context.Products.Find(id);
+        }
     }
 }
