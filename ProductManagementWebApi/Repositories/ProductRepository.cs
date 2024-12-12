@@ -1,4 +1,6 @@
-﻿namespace ProductManagementWebApi.Repositories
+﻿using ProductManagementWebApi.Models;
+
+namespace ProductManagementWebApi.Repositories
 {
     public class ProductRepository
     {
@@ -7,6 +9,13 @@
         public ProductRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+
+        public Product AddProduct(Product product)
+        {
+            _context.Products.Add(product);
+            _context.SaveChanges();
+            return product;
         }
     }
 }
