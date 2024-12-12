@@ -1,4 +1,12 @@
 
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using ProductManagementWebApi.DTO;
+using ProductManagementWebApi.Models;
+using ProductManagementWebApi.Repositories;
+using ProductManagementWebApi.Services;
+using System.Reflection;
+
 namespace ProductManagementWebApi
 {
     public class Program
@@ -8,11 +16,20 @@ namespace ProductManagementWebApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Configure DbContext
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            // Configure AutoMapper to scan the assembly for profiles
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); // Ensure this scans for MappingProfile
+
+            // Dependency Injection
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
 
             var app = builder.Build();
 
@@ -24,13 +41,21 @@ namespace ProductManagementWebApi
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();
+        }
+    }
+
+    // AutoMapper Profile
+    public class MappingProfile : Profile
+    {
+        public MappingProfile()
+        {
+            CreateMap<Product, ProductOutputDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
+            CreateMap<ProductInputDto, Product>();
         }
     }
 }
