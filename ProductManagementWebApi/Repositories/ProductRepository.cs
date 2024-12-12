@@ -22,5 +22,14 @@ namespace ProductManagementWebApi.Repositories
         {
             return _context.Products.Find(id);
         }
+
+        public List<Product> GetProducts(int pageNumber, int pageSize)
+        {
+            return _context.Products
+                .OrderByDescending(p => p.DateAdded)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
     }
 }
