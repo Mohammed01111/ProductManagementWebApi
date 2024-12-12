@@ -5,7 +5,7 @@ using ProductManagementWebApi.Repositories;
 
 namespace ProductManagementWebApi.Services
 {
-    public class ProductService 
+    public class ProductService : IProductService
     {
         private readonly IProductRepository _repository;
         private readonly IMapper _mapper;
